@@ -5,24 +5,25 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.time.Instant;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 @Service
 public class JwtService {
-    private final String secret_key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsS0WA7NhttzE8c08PH2B" +
-            "fwZbBP527WQMi9zNS35of8Lq51jPjl0UvsI3VbPPzpvkcPTHNIWPl5mccrLoNbsy" +
-            "UJc4PwmoneKAXSd+a9Tn91izb7hwizsdHi9gG0dAwUsF5lczCi4pC7fQJm/m1acp" +
-            "g1MxVO6z6UhDp8YyJpeqd4fp+KuC/J6BSnDJ9QCxg4F/sm5v1vpmADiPru9WmK6R" +
-            "HyYu9JXb3kO2yxltI4pi22Eod5Yvbo6zC2+/odFE7JFCI0n8LmQgvGFr0ruEagZG" +
-            "DKH1mMQvng8dqMCRRATcwaPjUkcxvYZI3qND5cGa9FhB7BvxwX2nMHMmg6FenC2Z" +
-            "5wIDAQAB";
+    @Value("${application.security.jwt.secret-key}")
+    private String secretKey;
+    @Value("${application.security.jwt.expiration}")
+    private long jwtExpiration;
+    @Value("${application.security.jwt.refresh-token.expiration}")
+    private long jwtRefreshExpiration;
 
     public String getUserEmail(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -41,21 +42,28 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails) {
-        return generateToken(Map.of(), userDetails);
+        return generateToken(new HashMap<>(), userDetails);
     }
     public String generateToken(Map<String, Object> claims,
                                 UserDetails userDetails) {
+        return buildToken(claims, userDetails, jwtExpiration);
+    }
+    private String buildToken(Map<String, Object> claims,
+                              UserDetails userDetails,
+                              long expiration) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
-                .signWith(getSignInKey(), SignatureAlgorithm.RS256)
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
-
+    public String generateRefreshToken(UserDetails userDetails) {
+        return buildToken(new HashMap<>(), userDetails, jwtRefreshExpiration);
+    }
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secret_key);
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -71,4 +79,6 @@ public class JwtService {
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
+
+
 }
