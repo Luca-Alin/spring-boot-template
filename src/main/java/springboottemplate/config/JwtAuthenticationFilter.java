@@ -1,4 +1,4 @@
-package org.example.springboottemplate.config;
+package springboottemplate.config;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

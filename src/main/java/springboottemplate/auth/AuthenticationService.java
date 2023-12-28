@@ -1,20 +1,17 @@
-package org.example.springboottemplate.auth;
+package springboottemplate.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.example.springboottemplate.config.JwtService;
-import org.example.springboottemplate.user.Role;
-import org.example.springboottemplate.user.User;
-import org.example.springboottemplate.user.UserRepository;
+import springboottemplate.config.JwtService;
+import springboottemplate.data.user.Role;
+import springboottemplate.data.user.User;
+import springboottemplate.data.user.UserRepository;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;

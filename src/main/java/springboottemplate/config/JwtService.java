@@ -1,4 +1,4 @@
-package org.example.springboottemplate.config;
+package springboottemplate.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

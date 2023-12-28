@@ -1,4 +1,4 @@
-package org.example.springboottemplate.user;
+package springboottemplate.data.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
