@@ -18,7 +18,8 @@ import springboottemplate.config.JwtAuthenticationFilter;
 public class SecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
-            "/api/v1/auth/**"
+            "/api/v1/auth/**",
+            "/ws"
     };
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authenticationProvider;
