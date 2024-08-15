@@ -16,6 +16,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthenticationService service;
+
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
             @RequestBody RegisterRequest registerRequest
